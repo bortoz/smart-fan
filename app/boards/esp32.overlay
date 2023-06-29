@@ -1,0 +1,59 @@
+/*
+ * Copyright (c) 2023 Alessandro Bortolin
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <dt-bindings/pinctrl/esp32-pinctrl.h>
+
+/ {
+	aliases {
+		servo = &servo;
+		fan = &fan;
+	};
+
+    pwmleds {
+		compatible = "pwm-leds";
+		servo: servo {
+			pwms = <&ledc0 0 0 PWM_POLARITY_NORMAL>;
+		};
+		fan: fan {
+			pwms = <&ledc0 1 0 PWM_POLARITY_INVERTED>;
+		};
+	};
+};
+
+&pinctrl {
+	ledc0_default: ledc0_default {
+		group1 {
+			pinmux = <LEDC_CH0_GPIO4>,
+			         <LEDC_CH1_GPIO5>;
+			output-enable;
+		};
+	};
+};
+
+&ledc0 {
+	pinctrl-0 = <&ledc0_default>;
+	pinctrl-names = "default";
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+	channel0@0 {
+		reg = <0x0>;
+		timer = <0>;
+	};
+	channel1@0 {
+		reg = <0x1>;
+		timer = <1>;
+	};
+};
+
+&i2c0 {
+    amg88xx@69 {
+        compatible = "panasonic,amg88xx";
+		reg = <0x69>;
+		int-gpios = <&gpio 23 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		status = "okay";
+    };
+};

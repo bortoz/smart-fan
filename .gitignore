@@ -1,0 +1,12 @@
+# Zephyr
+bootloader/
+modules/
+tools/
+zephyr/
+
+# Build
+build/
+
+# IDE
+.vscode/
+.idea/
