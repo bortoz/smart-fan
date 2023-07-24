@@ -7,26 +7,26 @@
 #include <zephyr/drivers/pwm.h>
 #include <zephyr/logging/log.h>
 
+#include "smart_fan/sensor.h"
 #include "smart_fan/servo.h"
 
 LOG_MODULE_DECLARE(smart_fan, LOG_LEVEL_INF);
 
+static const struct pwm_dt_spec servo = PWM_DT_SPEC_GET(DT_NODELABEL(servo));
+static const uint32_t min_pulse = DT_PROP(DT_NODELABEL(servo), min_pulse);
+static const uint32_t max_pulse = DT_PROP(DT_NODELABEL(servo), max_pulse);
+static const uint32_t rotation_angle = DT_PROP(DT_NODELABEL(servo), rotation_angle);
 
-#define PERIOD PWM_MSEC(20)
-#define MIN_PULSE PWM_MSEC(1)
-#define MAX_PULSE PWM_MSEC(2)
-#define SERVO_STEPS 20
+static uint32_t pulse = (min_pulse + max_pulse) / 2;
 
-static const struct pwm_dt_spec servo = PWM_DT_SPEC_GET(DT_ALIAS(servo));
-
-static uint32_t pulse = (MIN_PULSE + MAX_PULSE) / 2;
+#define PIXEL_ANGLE (VIEW_ANGLE / PIXEL_WIDTH)
+#define PIXEL_PULSE ((max_pulse - min_pulse) / (rotation_angle / PIXEL_ANGLE))
 
 void move_servo(int movement) {
-    int step = (MAX_PULSE - MIN_PULSE) / SERVO_STEPS;
-    pulse = Z_CLAMP(pulse + step * movement, MIN_PULSE, MAX_PULSE);
+    pulse = Z_CLAMP(pulse + movement * PIXEL_PULSE, min_pulse, max_pulse - 1);
     LOG_INF("Servo pulse: %d", pulse);
 
-    int ret = pwm_set_dt(&servo, PERIOD, pulse);
+    int ret = pwm_set_pulse_dt(&servo, pulse);
     if (ret < 0) {
         LOG_ERR("Failed to set servo pulse width: %d", ret);
     }

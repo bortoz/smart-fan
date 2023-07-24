@@ -14,9 +14,6 @@
 LOG_MODULE_DECLARE(smart_fan, LOG_LEVEL_INF);
 
 
-#define PIXEL_HEIGHT 8
-#define PIXEL_WIDTH 8
-
 #define PIXEL(x, y) ((PIXEL_WIDTH - (x) - 1) * PIXEL_HEIGHT + (y))
 
 
@@ -60,7 +57,7 @@ void find_hottest_zone(int* position, int* temperature) {
 
     // Map the hottest position from range [0, 7] to range [-3, 3]
     *position = (hot_pos - (PIXEL_WIDTH / 2) + (hot_pos < PIXEL_WIDTH / 2));
-    *temperature = hot_temp;
+    *temperature = hot_temp / PIXEL_HEIGHT;
 }
 
 static int init() {
