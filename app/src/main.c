@@ -12,7 +12,7 @@
 
 LOG_MODULE_REGISTER(smart_fan);
 
-#define TIMER_PULSE 1000
+#define TIMER_PULSE 250
 
 static void loop() {
     if (refetch()) return;

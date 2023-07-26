@@ -23,7 +23,7 @@ static uint32_t pulse = (min_pulse + max_pulse) / 2;
 #define PIXEL_PULSE ((max_pulse - min_pulse) / (rotation_angle / PIXEL_ANGLE))
 
 void move_servo(int movement) {
-    pulse = Z_CLAMP(pulse + movement * PIXEL_PULSE, min_pulse, max_pulse - 1);
+    pulse = Z_CLAMP(pulse + movement * PIXEL_PULSE, min_pulse, max_pulse);
     LOG_INF("Servo pulse: %d", pulse);
 
     int ret = pwm_set_pulse_dt(&servo, pulse);

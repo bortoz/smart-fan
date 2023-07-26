@@ -12,7 +12,7 @@
         pwms = <&ledc0 0 PWM_MSEC(20) PWM_POLARITY_NORMAL>;
         min-pulse = <PWM_MSEC(1)>;
         max-pulse = <PWM_MSEC(2)>;
-        rotation-angle = <120>;
+        rotation-angle = <90>;
 	};
 
     fans {
